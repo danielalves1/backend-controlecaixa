@@ -67,7 +67,7 @@ public class MovimentacaoController {
   /* GET BALANCE */
   @GetMapping("/movimentacao/balanco")
   public ResponseEntity<Object> getBalanco() {
-    Balanco balanco = customMovimentacaoRepository.getBalanco();
+    Balanco balanco = (Balanco) customMovimentacaoRepository.getBalanco();
     return new ResponseEntity<>(balanco, HttpStatus.OK);
   }
 

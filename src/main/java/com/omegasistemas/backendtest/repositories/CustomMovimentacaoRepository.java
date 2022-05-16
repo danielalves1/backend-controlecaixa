@@ -18,11 +18,14 @@ public class CustomMovimentacaoRepository {
   }
 
   public Balanco getBalanco() {
-    String sql = "select SUM(case when M.tipo = 'E' then M.valor else 0 end) as entradas, SUM(case when M.tipo = 'S' then M.valor else 0 end) as saidas, 0.0 as balanco from Movimentacao M";
-    var query = em.createQuery(sql, Balanco.class);
-    List<Balanco> balanco = query.getResultList();
-    balanco.get(0).setBalanco(balanco.get(0).getEntradas() - balanco.get(0).getSaidas());
-    return balanco.get(0);
+    String sql = "select sum(case when M.tipo = 'E' then M.valor else 0 end) as entradas, sum(case when M.tipo = 'S' then M.valor else 0 end) as saidas, 0.0 as balanco from Movimentacao M";
+    var query = em.createNativeQuery(sql);
+    Object[] result = (Object[]) query.getSingleResult();
+    Balanco balanco = new Balanco();
+    balanco.setEntradas((Double) result[0]);
+    balanco.setSaidas((Double) result[1]);
+    balanco.setBalanco(balanco.getEntradas() - balanco.getSaidas());
+    return balanco;
   }
 
   public List<Movimentacao> find(Long id, Integer ano, Integer mes, Date data) {

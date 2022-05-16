@@ -8,6 +8,7 @@ import com.omegasistemas.backendtest.models.Caixa;
 import com.omegasistemas.backendtest.repositories.CaixaRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +30,7 @@ public class CaixaController {
   /* GET ALL */
   @GetMapping("/caixa")
   public List<Caixa> getCaixa() {
-    return caixaRepository.findAll();
+    return caixaRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
   }
 
   /* GET BY ID */
