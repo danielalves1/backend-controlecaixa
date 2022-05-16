@@ -1,9 +1,12 @@
 package com.omegasistemas.backendtest.models;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Caixa {
@@ -12,6 +15,9 @@ public class Caixa {
   private long id;
   private String descricao;
   private Double saldoinicial;
+
+  @OneToMany
+  private List<Movimentacao> movimentacoes;
 
   public long getId() {
     return id;
@@ -37,4 +43,11 @@ public class Caixa {
     this.saldoinicial = saldoinicial;
   }
 
+  public List<Movimentacao> getMovimentacoes() {
+    return movimentacoes;
+  }
+
+  public void setMovimentacoes(List<Movimentacao> movimentacoes) {
+    this.movimentacoes = movimentacoes;
+  }
 }
