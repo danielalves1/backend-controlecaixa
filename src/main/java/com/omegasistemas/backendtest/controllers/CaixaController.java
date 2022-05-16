@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,26 +26,29 @@ public class CaixaController {
   @Autowired
   CaixaRepository caixaRepository;
 
+  /* GET ALL */
   @GetMapping("/caixa")
   public List<Caixa> getCaixa() {
     return caixaRepository.findAll();
   }
 
+  /* GET BY ID */
   @GetMapping("/caixa/{id}")
   public ResponseEntity<Object> getCaixaById(@PathVariable(value = "id") long id) {
-    Caixa response = caixaRepository.findById(id);
+    Caixa response = caixaRepository.findById((long) id);
     if (response == null || response.getId() < 1) {
       return new ResponseEntity<>(makeResponse(true, "registro não encontrado", null), HttpStatus.NOT_FOUND);
     }
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
+  /* CREATE */
   @PostMapping("/caixa")
-  @ResponseBody
   public ResponseEntity<Object> createCaixa(@RequestBody Caixa caixa) {
     if (caixa.getDescricao() == null || caixa.getDescricao().length() < 3) {
       return new ResponseEntity<>(
-          makeResponse(true, "não foi possível salvar o registro", "o campo 'descrição' é obrigatório"),
+          makeResponse(true, "não foi possível salvar o registro",
+              "o campo 'descrição' deve ser preenchido com pelo menos 3 caracteres"),
           HttpStatus.BAD_REQUEST);
     }
     if (caixa.getSaldoinicial() == null) {
@@ -55,6 +58,28 @@ public class CaixaController {
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
+  /* UPDATE */
+  @PutMapping("/caixa/{id}")
+  public ResponseEntity<Object> updateCaixa(@RequestBody Caixa caixa, @PathVariable(value = "id") long id) {
+    if (caixa.getId() < 1 || caixa.getId() != id) {
+      return new ResponseEntity<>(makeResponse(true, "não foi possível atualizar",
+          "o ID do registro que você está tentando atualizar não corresponde ao ID que consta no Body da requisição"),
+          HttpStatus.OK);
+    }
+    Caixa caixaToUpdate = caixaRepository.findById(id);
+    if (caixaToUpdate.getId() > 0) {
+      caixaToUpdate.setDescricao(caixa.getDescricao());
+      caixaToUpdate.setSaldoinicial(caixa.getSaldoinicial());
+      Caixa resp = caixaRepository.save(caixa);
+      return new ResponseEntity<>(resp, HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(
+          makeResponse(true, "não foi possível atualizar", "nenhum registro encontrado com o ID fornecido"),
+          HttpStatus.NOT_FOUND);
+    }
+  }
+
+  /* DELETE */
   @DeleteMapping("/caixa/{id}")
   public ResponseEntity<Object> deleteCaixa(@PathVariable(value = "id") long id) {
     try {
@@ -66,6 +91,7 @@ public class CaixaController {
     }
   }
 
+  /* MAKE SIMPLE MESSAGES TO RESPONSE */
   private Map<String, Object> makeResponse(Boolean error, String message, String reason) {
     Map<String, Object> resp = new HashMap<>();
     if (error) {
