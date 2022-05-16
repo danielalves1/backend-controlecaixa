@@ -9,15 +9,15 @@ import javax.persistence.Id;
 public class Caixa {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  private long id;
   private String descricao;
-  private Double valor;
+  private Double saldoinicial;
 
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 
@@ -29,12 +29,12 @@ public class Caixa {
     this.descricao = descricao;
   }
 
-  public Double getValor() {
-    return valor;
+  public Double getSaldoinicial() {
+    return saldoinicial;
   }
 
-  public void setValor(Double valor) {
-    this.valor = valor;
+  public void setSaldoinicial(Double saldoinicial) {
+    this.saldoinicial = saldoinicial;
   }
 
 }

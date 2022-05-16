@@ -6,12 +6,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 @Entity
 public class Usuario {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private long id;
 
   @Column(nullable = false)
   private String nome;
@@ -22,17 +24,17 @@ public class Usuario {
   @Column(nullable = false)
   private String senha;
 
-  @Column(nullable = false, columnDefinition = "0 - Acesso Total | 1 - Apenas movimentacao")
+  @Column(nullable = false)
   private Integer nivel_acesso = 1;
 
   @Column(nullable = false)
   private Boolean ativo = true;
 
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 
@@ -57,7 +59,9 @@ public class Usuario {
   }
 
   public void setSenha(String senha) {
-    this.senha = senha;
+    this.senha = DigestUtils.sha256Hex(senha);
+    System.out.println("Senha gerada");
+    System.out.println(this.senha);
   }
 
   public Integer getNivel_acesso() {
@@ -75,7 +79,5 @@ public class Usuario {
   public void setAtivo(Boolean ativo) {
     this.ativo = ativo;
   }
-
-  
 
 }

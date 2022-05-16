@@ -14,7 +14,7 @@ public class Movimentacao {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  private long id;
 
   @Column(nullable = false)
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,7 +24,6 @@ public class Movimentacao {
   private String tipo;
 
   @ManyToOne(targetEntity = Caixa.class)
-  @Column(nullable = false)
   private Caixa caixa;
 
   @Column(nullable = false)
@@ -33,11 +32,11 @@ public class Movimentacao {
   @Column(nullable = false)
   private Double valor;
 
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 
