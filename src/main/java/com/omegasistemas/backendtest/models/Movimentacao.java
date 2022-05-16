@@ -23,7 +23,7 @@ public class Movimentacao {
   @Column(length = 1, nullable = false)
   private String tipo;
 
-  @ManyToOne(targetEntity = Caixa.class)
+  @ManyToOne
   private Caixa caixa;
 
   @Column(nullable = false)
