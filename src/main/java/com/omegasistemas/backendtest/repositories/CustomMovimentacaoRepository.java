@@ -1,7 +1,11 @@
 package com.omegasistemas.backendtest.repositories;
 
+import java.sql.Date;
 import java.util.List;
+
 import javax.persistence.EntityManager;
+
+import com.omegasistemas.backendtest.models.Balanco;
 import com.omegasistemas.backendtest.models.Movimentacao;
 import org.springframework.stereotype.Repository;
 
@@ -13,10 +17,18 @@ public class CustomMovimentacaoRepository {
     this.em = em;
   }
 
-  public List<Movimentacao> find(long id, String ano, String mes, String data) {
+  public Balanco getBalanco() {
+    String sql = "select SUM(case when M.tipo = 'E' then M.valor else 0 end) as entradas, SUM(case when M.tipo = 'S' then M.valor else 0 end) as saidas, 0.0 as balanco from Movimentacao M";
+    var query = em.createQuery(sql, Balanco.class);
+    List<Balanco> balanco = query.getResultList();
+    balanco.get(0).setBalanco(balanco.get(0).getEntradas() - balanco.get(0).getSaidas());
+    return balanco.get(0);
+  }
+
+  public List<Movimentacao> find(Long id, Integer ano, Integer mes, Date data) {
     String query = "select M from Movimentacao M join M.caixa C where 1=1 ";
 
-    if (id > 0) {
+    if (id != null && id > 0) {
       query += "and C.id = :id ";
     }
     if (ano != null) {
@@ -25,13 +37,13 @@ public class CustomMovimentacaoRepository {
     if (mes != null) {
       query += "and extract(MONTH from M.data) = :mes ";
     }
-    if (ano != null) {
+    if (data != null) {
       query += "and M.data = :data ";
     }
 
     var completeQuery = em.createQuery(query, Movimentacao.class);
 
-    if (id > 0) {
+    if (id != null && id > 0) {
       completeQuery.setParameter("id", id);
     }
     if (ano != null) {
@@ -40,7 +52,7 @@ public class CustomMovimentacaoRepository {
     if (mes != null) {
       completeQuery.setParameter("mes", mes);
     }
-    if (ano != null) {
+    if (data != null) {
       completeQuery.setParameter("data", data);
     }
 
