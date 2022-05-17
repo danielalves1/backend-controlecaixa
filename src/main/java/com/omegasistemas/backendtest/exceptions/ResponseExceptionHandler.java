@@ -3,6 +3,8 @@ package com.omegasistemas.backendtest.exceptions;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.NoResultException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,16 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
     String bodyOfResponse = ex.getLocalizedMessage();
     return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
+  }
+
+  @ExceptionHandler(value = { NoResultException.class })
+  protected ResponseEntity<Object> handleNoResultException(RuntimeException ex, WebRequest request) {
+    Map<String, Object> resp = new HashMap<>();
+    resp.put("error", true);
+    resp.put("message", "não foi possível realizar o acesso");
+    resp.put("reason", "nenhum registro encontrado com as credenciais informadas");
+    resp.put("detail", ex.getMessage());
+    return new ResponseEntity<>(resp, HttpStatus.UNAUTHORIZED);
   }
 
   @ExceptionHandler(value = { MethodArgumentTypeMismatchException.class, NumberFormatException.class })

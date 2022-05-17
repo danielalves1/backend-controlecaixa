@@ -1,5 +1,8 @@
 package com.omegasistemas.backendtest.models;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -78,6 +81,15 @@ public class Usuario {
 
   public void setAtivo(Boolean ativo) {
     this.ativo = ativo;
+  }
+
+  public Map<String, Object> serialized() {
+    Map<String, Object> serialized = new HashMap<>();
+    serialized.put("nome", this.nome);
+    serialized.put("usuario", this.usuario);
+    serialized.put("ativo", this.ativo);
+    serialized.put("nivel_acesso", this.nivel_acesso);
+    return serialized;
   }
 
 }
