@@ -28,6 +28,18 @@ public class CustomMovimentacaoRepository {
     return balanco;
   }
 
+  public Balanco getBalancoAno(Integer ano) {
+    String sql = "select sum(case when M.tipo = 'E' then M.valor else 0 end) as entradas, sum(case when M.tipo = 'S' then M.valor else 0 end) as saidas, 0.0 as balanco from Movimentacao M where EXTRACT(YEAR from M.data) = :ano";
+    var query = em.createNativeQuery(sql);
+    query.setParameter("ano", ano);
+    Object[] result = (Object[]) query.getSingleResult();
+    Balanco balanco = new Balanco();
+    balanco.setEntradas((Double) result[0]);
+    balanco.setSaidas((Double) result[1]);
+    balanco.setBalanco(balanco.getEntradas() - balanco.getSaidas());
+    return balanco;
+  }
+
   public List<Integer> getAnos() {
     String sql = "select DISTINCT EXTRACT(YEAR from M.data) as ano from Movimentacao M";
     var query = em.createQuery(sql, Integer.class);

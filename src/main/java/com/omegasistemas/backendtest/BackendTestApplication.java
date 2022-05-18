@@ -1,5 +1,9 @@
 package com.omegasistemas.backendtest;
 
+import com.omegasistemas.backendtest.models.Usuario;
+import com.omegasistemas.backendtest.repositories.UsuarioRepository;
+
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +25,19 @@ public class BackendTestApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackendTestApplication.class, args);
+	}
+
+	@Bean
+	CommandLineRunner init(UsuarioRepository usuarioRepository) {
+		return args -> {
+			Usuario usuario = new Usuario();
+			usuario.setAtivo(true);
+			usuario.setNivel_acesso(0);
+			usuario.setNome("Daniel Alves");
+			usuario.setUsuario("daniel");
+			usuario.setSenha("123");
+			usuarioRepository.save(usuario);
+		};
 	}
 
 }

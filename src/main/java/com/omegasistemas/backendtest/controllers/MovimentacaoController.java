@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -114,6 +115,28 @@ public class MovimentacaoController {
   public ResponseEntity<Object> getBalanco(WebRequest request) {
     if (auth.validateAccess(request)) {
       Balanco balanco = (Balanco) customMovimentacaoRepository.getBalanco();
+      return new ResponseEntity<>(balanco, HttpStatus.OK);
+    } else {
+      Map<String, Object> resp = new HashMap<>();
+      resp.put("error", true);
+      resp.put("message", "não é possível listar os dados");
+      resp.put("reason", "você não tem permissão para realizar o procedimento");
+      return new ResponseEntity<>(resp, HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  /* GET BALANCE BY YEAR */
+  @GetMapping("/movimentacao/balanco/{ano}")
+  public ResponseEntity<Object> getBalancoPorAno(@PathVariable(value = "ano") Integer ano, WebRequest request) {
+    if (auth.validateAccess(request)) {
+      if (ano == null) {
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("error", true);
+        resp.put("message", "não é possível listar os dados");
+        resp.put("reason", "é necessário informar o ano");
+        return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
+      }
+      Balanco balanco = (Balanco) customMovimentacaoRepository.getBalancoAno(ano);
       return new ResponseEntity<>(balanco, HttpStatus.OK);
     } else {
       Map<String, Object> resp = new HashMap<>();
