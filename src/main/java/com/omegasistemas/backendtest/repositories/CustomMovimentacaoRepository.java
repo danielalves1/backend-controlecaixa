@@ -22,8 +22,8 @@ public class CustomMovimentacaoRepository {
     var query = em.createNativeQuery(sql);
     Object[] result = (Object[]) query.getSingleResult();
     Balanco balanco = new Balanco();
-    balanco.setEntradas((Double) result[0]);
-    balanco.setSaidas((Double) result[1]);
+    balanco.setEntradas((Double) (result[0] != null ? result[0] : 0.0));
+    balanco.setSaidas((Double) (result[1] != null ? result[1] : 0.0));
     balanco.setBalanco(balanco.getEntradas() - balanco.getSaidas());
     return balanco;
   }
