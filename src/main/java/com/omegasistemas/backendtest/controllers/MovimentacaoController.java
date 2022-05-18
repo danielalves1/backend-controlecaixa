@@ -67,6 +67,19 @@ public class MovimentacaoController {
     }
   }
 
+  @GetMapping("/movimentacao/anos")
+  public ResponseEntity<Object> getAnos(WebRequest request) {
+    if (auth.validateAccess(request)) {
+      return new ResponseEntity<>(customMovimentacaoRepository.getAnos(), HttpStatus.OK);
+    } else {
+      Map<String, Object> resp = new HashMap<>();
+      resp.put("error", true);
+      resp.put("message", "não é possível listar os dados");
+      resp.put("reason", "você não tem permissão para realizar o procedimento");
+      return new ResponseEntity<>(resp, HttpStatus.UNAUTHORIZED);
+    }
+  }
+
   /* CREATE */
   @PostMapping("/movimentacao")
   public ResponseEntity<Object> createMovimentacao(@RequestBody Movimentacao movimentacao, WebRequest request) {

@@ -28,6 +28,13 @@ public class CustomMovimentacaoRepository {
     return balanco;
   }
 
+  public List<Integer> getAnos() {
+    String sql = "select DISTINCT EXTRACT(YEAR from M.data) as ano from Movimentacao M";
+    var query = em.createQuery(sql, Integer.class);
+    var result = query.getResultList();
+    return result;
+  }
+
   public List<Movimentacao> find(Long id, Integer ano, Integer mes, Date data) {
     String query = "select M from Movimentacao M join M.caixa C where 1=1 ";
 
